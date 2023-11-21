@@ -1,0 +1,223 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ERM_Desktop.ViewModels"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="690"
+             x:Class="ERM_Desktop.Views.ServerSelectionView"
+             x:DataType="vm:ServerSelectionViewModel"
+             x:CompileBindings="False">
+    <Grid>
+        <Rectangle
+            Fill="{StaticResource Background}"
+            Opacity="0.8"/>
+        
+        <Grid RowDefinitions="130, *">
+            <Border
+                BorderBrush="#333333"
+                BorderThickness="0, 0, 0, 1">
+                <Rectangle
+                    Fill="#222222"
+                    Opacity="0.4"/>
+            </Border>
+            <StackPanel
+                Grid.Row="0" Height="130"
+                Orientation="Horizontal"
+                VerticalAlignment="Center"
+                Spacing="20"
+                Margin="50,0">
+                <Border
+                    Height="80"
+                    Width="80"
+                    ClipToBounds="True"
+                    CornerRadius="90"
+                    Background="#333333">
+                    <Image asyncImageLoader:ImageLoader.Source="{Binding AvatarURL}" Height="80" Width="80"></Image>
+                </Border>
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Orientation="Vertical">
+                    <TextBlock
+                        Text="{Binding Username}"
+                        FontSize="40"
+                        VerticalAlignment="Center">
+                    </TextBlock>
+                    <TextBlock
+                        Foreground="{StaticResource Brand}"
+                        Text="ERM SYSTEMS"
+                        FontWeight="Bold"
+                        FontSize="18"
+                        VerticalAlignment="Center">
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+            <Button
+                Grid.Row="0"
+                HorizontalAlignment="Right"
+                Margin="20"
+                VerticalAlignment="Center"
+                CornerRadius="8"
+                Content="Switch Account"
+                Background="Transparent"
+                BorderBrush="{StaticResource Brand}"
+                BorderThickness="2"
+                Command="{Binding SwitchAccountCommand}"/>
+            <Grid Grid.Row="1">
+                <Border
+                    Height="520"
+                    Width="800"
+                    BorderBrush="#333333"
+                    CornerRadius="8"
+                    Background="#222222"
+                    BorderThickness="1">
+                    <Grid RowDefinitions="*, 460">
+                        <StackPanel
+                            Orientation="Vertical"
+                            Margin="15, 0, 0, 0">
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                Text="Server Selection"
+                                FontSize="26"
+                                FontWeight="SemiBold"/>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                Text="Select a server to Moderate"
+                                FontSize="18"
+                                FontWeight="Light"/>
+                        </StackPanel>
+                        <ScrollViewer
+                            Grid.Row="1">
+                            <Grid>
+                                <!-- Component -->
+                                <ItemsControl
+                                    IsVisible="{Binding Loaded}"
+                                    Items="{Binding Servers}"
+                                    Background="Transparent"
+                                    Margin="10, 5">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border
+                                                Margin="0,5"
+                                                Height="80"
+                                                BorderBrush="#444444"
+                                                CornerRadius="8"
+                                                Background="#333333"
+                                                BorderThickness="1">
+                                                <Grid>
+                                                    <StackPanel
+                                                        VerticalAlignment="Center"
+                                                        Orientation="Horizontal"
+                                                        Spacing="10">
+                                                        <Border
+                                                            Margin="8,0,0,0"
+                                                            CornerRadius="8"
+                                                            Height="64"
+                                                            Width="64"
+                                                            ClipToBounds="True"
+                                                            Background="#222222">
+                                                            <Image
+                                                                asyncImageLoader:ImageLoader.Source="{Binding IconURL}"/>
+                                                        </Border>
+                                                        <StackPanel
+                                                            VerticalAlignment="Center"
+                                                            Orientation="Vertical">
+                                                            <TextBlock
+                                                                MaxWidth="550"
+                                                                FontSize="24"
+                                                                FontWeight="Light"
+                                                                Text="{Binding Name}"
+                                                                ToolTip.Tip="{Binding Name}"/>
+                                                            <TextBlock
+                                                                MaxWidth="550"
+                                                                FontSize="16"
+                                                                Text="{Binding InfoFormatted}"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                    <Button
+                                                        HorizontalContentAlignment="Center"
+                                                        VerticalContentAlignment="Center"
+                                                        Height="70"
+                                                        Width="100"
+                                                        CornerRadius="8"
+                                                        Content="Select"
+                                                        FontWeight="Bold"
+                                                        HorizontalAlignment="Right"
+                                                        FontSize="20"
+                                                        Foreground="{StaticResource Brand}"
+                                                        Background="Transparent"
+                                                        Margin="5,0"
+                                                        Command="{Binding $parent[ItemsControl].DataContext.SelectServerCommand}"
+                                                        CommandParameter="{Binding}"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                
+                                <!-- Skeleton -->
+                                <ItemsControl
+                                    IsVisible="{Binding !Loaded}"
+                                    Items="{Binding SkeletonCount}"
+                                    Background="Transparent"
+                                    Margin="10, 5">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border
+                                                Margin="0,5"
+                                                Height="80"
+                                                BorderBrush="#444444"
+                                                CornerRadius="8"
+                                                Background="#333333"
+                                                BorderThickness="1">
+                                                <Grid>
+                                                    <StackPanel
+                                                        VerticalAlignment="Center"
+                                                        Orientation="Horizontal"
+                                                        Spacing="10">
+                                                        <Border
+                                                            Margin="8,0,0,0"
+                                                            CornerRadius="8"
+                                                            Height="64"
+                                                            Width="64"
+                                                            ClipToBounds="True"
+                                                            Background="#444444">
+                                                        </Border>
+                                                        <StackPanel
+                                                            Spacing="10"
+                                                            VerticalAlignment="Center"
+                                                            Orientation="Vertical">
+                                                            <Border
+                                                                CornerRadius="8"
+                                                                Background="#444444"
+                                                                Width="550"
+                                                                Height="30"/>
+                                                            <Border
+                                                                HorizontalAlignment="Left"
+                                                                CornerRadius="8"
+                                                                Background="#444444"
+                                                                Height="18"
+                                                                Width="200"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                    <Border
+                                                        IsEnabled="False"
+                                                        Height="70"
+                                                        Width="100"
+                                                        CornerRadius="8"
+                                                        HorizontalAlignment="Right"
+                                                        Background="#444444"
+                                                        Margin="5,0"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

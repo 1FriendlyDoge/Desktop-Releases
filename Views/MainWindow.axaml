@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
+        Width="1280" Height="720"
+        x:Class="ERM_Desktop.Views.MainWindow"
+        Icon="/Assets/erm.ico"
+        Title="ERM Desktop"
+        TransparencyLevelHint="{Binding TransparencyLevel}"
+        Background="{Binding BackgroundBrush}"
+        ExtendClientAreaToDecorationsHint="True"
+        CanResize="False"
+        MaxHeight="720" MaxWidth="1280"
+        WindowStartupLocation="CenterOwner"
+        xmlns:vm="using:ERM_Desktop.ViewModels"
+        x:DataType="vm:MainWindowViewModel"
+        x:CompileBindings="True">
+    
+    <StackPanel
+        Orientation="Vertical">
+        <Grid
+            IsHitTestVisible="False"
+            Height="30">
+            <Rectangle
+                Fill="{StaticResource Background}"
+                Opacity="0.1"
+                />
+            <TextBlock
+                Grid.Column="0"
+                FontSize="16"
+                FontWeight="Bold"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                Margin="{Binding LogoMargin}"
+                Foreground="{StaticResource Brand}"
+                Text="ERM Desktop">
+            </TextBlock>
+        </Grid>
+       <ContentControl
+           Height="690"
+           Content="{Binding CurrentViewModel}">
+       </ContentControl>
+    </StackPanel>
+</Window>

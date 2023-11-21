@@ -1,0 +1,183 @@
+﻿<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="320"
+    Width="250" Height="320"
+    x:Class="ERM_Desktop.Views.Widgets.BanBolosWidgetView"
+    Title="Ban BOLO Widget"
+    Icon="/Assets/erm.ico"
+    TransparencyLevelHint="{Binding TransparencyLevel}"
+    Background="{Binding BackgroundBrush}"
+    ExtendClientAreaToDecorationsHint="True"
+    ExtendClientAreaChromeHints="NoChrome"
+    ExtendClientAreaTitleBarHeightHint="0"
+    CanResize="False"
+    PointerPressed="InputElement_OnPointerPressed">
+    <Grid>
+        <Rectangle
+            Fill="#111111"
+            Opacity="0.5"/>
+        <Grid
+            RowDefinitions="Auto, *">
+            <TextBlock
+                Text="Ban BOLOs"
+                FontSize="24"
+                FontWeight="Black"
+                Foreground="{StaticResource Brand}"
+                Margin="10,10,10,5"/>
+            <TextBlock
+                Grid.Row="1"
+                Text="No Entries"
+                FontWeight="SemiBold"
+                FontSize="24"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                TextAlignment="Center">
+                <TextBlock.IsVisible>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding Path="Loaded"/>
+                        <Binding Path="NoItems"/>
+                    </MultiBinding>
+                </TextBlock.IsVisible>
+            </TextBlock>
+            <Image
+                IsVisible="{Binding !Loaded}"
+                Grid.Row="1"
+                Classes="Spinner"
+                Height="80"
+                Width="80"
+                Source="/Assets/spinner.png"/>
+            <Grid
+                IsVisible="{Binding !NoItems}"
+                Margin="10,5,10,10"
+                Grid.Row="1"
+                RowDefinitions="*, Auto">
+                <Carousel
+                    IsVisible="{Binding Loaded}"
+                    Grid.Row="0"
+                    Items="{Binding PunishmentsList}"
+                    SelectedIndex="{Binding Cursor}"
+                    Margin="0,0,0,3"
+                    Background="Transparent">
+                    <Carousel.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                BorderBrush="#333333"
+                                Background="#222222"
+                                CornerRadius="8"
+                                BorderThickness="1">
+                                <StackPanel>
+                                    <StackPanel
+                                        Margin="5"
+                                        Orientation="Horizontal"
+                                        Spacing="5">
+                                        <Panel>
+                                            <Ellipse
+                                                Width="48" Height="48"
+                                                Fill="#333333"
+                                                Opacity="0.4"/>
+                                            <Border
+                                                ClipToBounds="True"
+                                                Width="48"
+                                                Height="48"
+                                                Background="Transparent"
+                                                CornerRadius="90">
+                                                <Image
+                                                    asyncImageLoader:ImageLoader.Source="{Binding AvatarUrl}"/>
+                                            </Border>
+                                        </Panel>
+                                        <StackPanel
+                                            Width="165"
+                                            VerticalAlignment="Center">
+                                            <TextBlock
+                                                FontSize="16"
+                                                Text="{Binding Punishment.Username}"/>
+                                            <TextBlock
+                                                Foreground="#888888"
+                                                FontSize="12"
+                                                Text="{Binding Punishment.UserID}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        FontSize="14"
+                                        Foreground="#888888"
+                                        MaxWidth="130"
+                                        Text="{Binding ModeratorDiscord}"
+                                        ToolTip.Tip="{Binding ModeratorTooltip}"/>
+                                    <ScrollViewer
+                                        Padding="5"
+                                        Height="70">
+                                        <TextBlock
+                                            Text="{Binding Punishment.Reason}"
+                                            TextWrapping="Wrap"/>
+                                    </ScrollViewer>
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        Text="{Binding DateFormatted}"
+                                        Foreground="#888888"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </Carousel.ItemTemplate>
+                </Carousel>
+                <StackPanel
+                    Spacing="2"
+                    Grid.Row="1">
+                    <TextBlock
+                        Text="{Binding CursorFormatted}"
+                        Foreground="{StaticResource Brand}"
+                        TextAlignment="Center"
+                        FontWeight="Bold"/>
+                    <Grid
+                        ColumnDefinitions="Auto, *, Auto">
+                        <Button
+                            Command="{Binding GoPreviousCommand}"
+                            VerticalContentAlignment="Center"
+                            Height="62"
+                            Grid.Column="0"
+                            CornerRadius="4"
+                            Background="#222222"
+                            Content="&lt;"/>
+                        <StackPanel
+                            Spacing="2"
+                            HorizontalAlignment="Center"
+                            Grid.Column="1">
+                            <Button
+                                Command="{Binding CopyBanCommand}"
+                                Width="160"
+                                Height="30"
+                                CornerRadius="4"
+                                Background="#222222"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Content="Copy Command"/>
+                            <Button
+                                IsEnabled="{Binding !Deletion}"
+                                Command="{Binding CompleteBoloCommand}"
+                                Width="160"
+                                Height="30"
+                                CornerRadius="4"
+                                Background="#222222"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Content="Complete BOLO"/>
+                        </StackPanel>
+                        <Button
+                            Command="{Binding GoNextCommand}"
+                            VerticalContentAlignment="Center"
+                            Height="62"
+                            Grid.Column="2"
+                            CornerRadius="4"
+                            Background="#222222"
+                            Content="&gt;"/>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,184 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="350"
+        Width="550" Height="350"
+        x:Class="ERM_Desktop.Views.Widgets.ModerationWidgetView"
+        Title="Moderation Widget"
+        Icon="/Assets/erm.ico"
+        TransparencyLevelHint="{Binding TransparencyLevel}"
+        Background="{Binding BackgroundBrush}"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="0"
+        CanResize="False"
+        xmlns:vm="using:ERM_Desktop.ViewModels.Widgets"
+        xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+        PointerPressed="InputElement_OnPointerPressed"
+        x:DataType="vm:ModerationViewModel"
+        x:CompileBindings="True">
+    <Grid>
+        <Rectangle
+            Fill="#111111"
+            Opacity="0.5"/>
+        <Grid
+            ColumnDefinitions="Auto,*">
+            <StackPanel
+                Grid.Column="0"
+                Margin="10"
+                Spacing="15"
+                Orientation="Vertical">
+                <TextBlock
+                    Text="Moderation"
+                    FontSize="24"
+                    FontWeight="Black"
+                    Foreground="{StaticResource Brand}"
+                    Margin="0,0,0,10"/>
+                <AutoCompleteBox
+                    KeyDown="InputElement_OnKeyDown"
+                    SelectedItem="{Binding SelectedItem}"
+                    IsDropDownOpen="{Binding CompletesOpen}"
+                    LostFocus="InputElement_OnLostFocusAuto"
+                    GotFocus="InputElement_OnGotFocusAuto"
+                    Text="{Binding UsernameInput}"
+                    Items="{Binding AutocompleteResults}"
+                    FilterMode="None"
+                    Background="Transparent"
+                    BorderBrush="#333333"
+                    Foreground="#FFFFFF"
+                    FontSize="16"
+                    Watermark="Username"/>
+                <TextBox
+                    Text="{Binding ReasonInput}"
+                    Background="Transparent"
+                    BorderBrush="#333333"
+                    Foreground="#FFFFFF"
+                    FontSize="16"
+                    Height="100"
+                    MaxWidth="370"
+                    AcceptsReturn="False"
+                    TextWrapping="Wrap"
+                    Watermark="Reason"/>
+                <ComboBox 
+                    x:Name="PunishmentBox"
+                    SelectedIndex="{Binding ActionIndex}"
+                    Items="{Binding PunishmentTypes}"
+                    Background="Transparent"
+                    PlaceholderText="Warning"
+                    FontFamily="Open Sans"
+                    FontSize="16"
+                    Width="370"
+                    BorderBrush="#333333"
+                    Foreground="#FFFFFF"/>
+            </StackPanel>
+            <StackPanel
+                Spacing="5"
+                Margin="10"
+                VerticalAlignment="Bottom"
+                Grid.Column="0"
+                Orientation="Horizontal">
+                <Button
+                    Command="{Binding PunishCommand}"
+                    IsEnabled="{Binding IdlePunishing}"
+                    CornerRadius="4"
+                    Content="Punish"
+                    FontSize="16"
+                    Width="120"
+                    Height="40"
+                    Background="{StaticResource Brand}"
+                    Foreground="#FFFFFF"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"/>
+                <Panel
+                    IsHitTestVisible="True">
+                    <Button
+                        IsHitTestVisible="True"
+                        CornerRadius="4"
+                        Command="{Binding PunishAICommand}"
+                        Content="{Binding AiPrediction}"
+                        IsEnabled="{Binding IdlePunishing}"
+                        FontSize="16"
+                        Width="120"
+                        Height="40"
+                        Background="#222222"
+                        Foreground="#FFFFFF"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"/>
+                    <TextBlock
+                        IsHitTestVisible="False"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="#FFFFFF"
+                        Opacity="0.1"
+                        Text="ERM AI"
+                        FontSize="28"
+                        FontWeight="Black"/>
+                </Panel>
+                <Button
+                    Command="{Binding ClearInputsCommand}"
+                    CornerRadius="4"
+                    Content="Clear"
+                    FontSize="16"
+                    Width="120"
+                    Height="40"
+                    Background="#222222"
+                    Foreground="#FFFFFF"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <StackPanel
+                Spacing="5"
+                Margin="10"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+                <Panel>
+                    <Ellipse
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="128" Height="128"
+                        Fill="#222222"
+                        Opacity="0.4"/>
+                    <Border
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        CornerRadius="90"
+                        Width="128"
+                        Height="128"
+                        ClipToBounds="True">
+                        <Image
+                            Width="128"
+                            Height="128"
+                            asyncImageLoader:ImageLoader.Source="{Binding AvatarUrl}"/>
+                    </Border>
+                </Panel>
+                <TextBlock
+                    Text="{Binding UsernameResult}"
+                    ToolTip.Tip="{Binding UsernameResult}"
+                    FontSize="14"
+                    TextAlignment="Center"
+                    Margin="0, 0, 0, -5"/>
+                <TextBlock
+                    Text="{Binding UserIdResult}"
+                    PointerPressed="InputElement_OnPointerPressedId"
+                    ToolTip.Tip="Copy to clipboard"
+                    Foreground="#888888"
+                    FontSize="13"
+                    TextAlignment="Center"/>
+                <Button
+                    Margin="0, 5, 0, 0"
+                    IsEnabled="{Binding SearchEnabled}"
+                    Command="{Binding SearchUserCommand}"
+                    Width="128"
+                    HorizontalContentAlignment="Center"
+                    HorizontalAlignment="Center"
+                    CornerRadius="4"
+                    Content="Search"
+                    Background="#222222"
+                    BorderThickness="2"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

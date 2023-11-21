@@ -1,0 +1,112 @@
+﻿<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="350"
+    Width="200" Height="350"
+    x:Class="ERM_Desktop.Views.Widgets.ShiftWidgetView"
+    Title="Shift Widget"
+    Icon="/Assets/erm.ico"
+    TransparencyLevelHint="{Binding TransparencyLevel}"
+    Background="{Binding BackgroundBrush}"
+    ExtendClientAreaToDecorationsHint="True"
+    ExtendClientAreaChromeHints="NoChrome"
+    ExtendClientAreaTitleBarHeightHint="0"
+    CanResize="False"
+    xmlns:vm="using:ERM_Desktop.ViewModels.Widgets"
+    PointerPressed="InputElement_OnPointerPressed"
+    x:DataType="vm:ShiftViewModel"
+    x:CompileBindings="True">
+    <Grid>
+        <Rectangle
+            Fill="#111111"
+            Opacity="0.5"/>
+        <StackPanel
+            Margin="10"
+            Spacing="5"
+            Orientation="Vertical">
+            <TextBlock
+                Text="Shift"
+                FontSize="24"
+                FontWeight="Black"
+                Foreground="{StaticResource Brand}"/>
+            <StackPanel
+                HorizontalAlignment="Center"
+                Orientation="Vertical"
+                Spacing="5">
+                <StackPanel
+                    Orientation="Vertical"
+                    Spacing="3">
+                    <Panel
+                        VerticalAlignment="Center">
+                        <Ellipse
+                            VerticalAlignment="Center"
+                            Width="180"
+                            Height="180"
+                            Stroke="{Binding EllipseColor}"
+                            StrokeThickness="10"/>
+                        <StackPanel
+                            Spacing="-10"
+                            VerticalAlignment="Center">
+                            <TextBlock
+                                TextAlignment="Center"
+                                FontSize="34"
+                                FontWeight="Bold"
+                                Text="{Binding FormattedTime}"/>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                TextAlignment="Center"
+                                FontSize="20"
+                                FontWeight="Regular"
+                                Foreground="#888888"
+                                Text="{Binding Status}"/>
+                        </StackPanel>
+                    </Panel>
+                    <ComboBox
+                        BorderBrush="#333333"
+                        Background="Transparent"
+                        SelectedIndex="{Binding SelectedType}"
+                        Items="{Binding ShiftTypes}"
+                        HorizontalAlignment="Center"
+                        Width="180"
+                        CornerRadius="4"
+                        Margin="0,5,0,0">
+                        <ComboBox.IsEnabled>
+                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                <Binding Path="Loaded"/>
+                                <Binding Path="!OnShift"/>
+                            </MultiBinding>
+                        </ComboBox.IsEnabled>
+                    </ComboBox>
+                    <Button
+                        IsEnabled="{Binding Loaded}"
+                        Width="180"
+                        HorizontalContentAlignment="Center"
+                        HorizontalAlignment="Center"
+                        CornerRadius="4"
+                        Command="{Binding InteractShiftCommand}"
+                        Content="{Binding ShiftText}"
+                        Background="#222222"
+                        BorderThickness="2"/>
+                    <Button
+                        Width="180"
+                        HorizontalContentAlignment="Center"
+                        HorizontalAlignment="Center"
+                        CornerRadius="4"
+                        Background="#222222"
+                        Command="{Binding InteractBreakCommand}"
+                        Content="{Binding BreakText}"
+                        BorderThickness="2">
+                        <Button.IsEnabled>
+                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                <Binding Path="Loaded"/>
+                                <Binding Path="OnShift"/>
+                            </MultiBinding>
+                        </Button.IsEnabled>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

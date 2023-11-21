@@ -1,0 +1,690 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ERM_Desktop.ViewModels"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="690"
+             x:Class="ERM_Desktop.Views.HomeView"
+             x:DataType="vm:HomeViewModel"
+             x:CompileBindings="False">
+    <Grid>
+        <Rectangle
+            Fill="{StaticResource Background}"
+            Opacity="0.8"/>
+        
+        <Grid
+            RowDefinitions="130, *">
+            <Border
+                BorderBrush="#333333"
+                BorderThickness="0, 0, 0, 1">
+                <Rectangle
+                    Fill="#222222"
+                    Opacity="0.4"/>
+            </Border>
+            <StackPanel
+                Grid.Row="0"
+                Height="130"
+                Orientation="Horizontal"
+                VerticalAlignment="Center"
+                Spacing="20"
+                Margin="50,0">
+                <Border
+                    Height="80"
+                    Width="80"
+                    ClipToBounds="True"
+                    CornerRadius="90"
+                    Background="#333333">
+                    <Image asyncImageLoader:ImageLoader.Source="{Binding AvatarURL}" Height="80" Width="80"></Image>
+                </Border>
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Orientation="Vertical">
+                    <TextBlock
+                        FontWeight="Bold"
+                        Text="{Binding Greeting}"
+                        FontSize="40"
+                        VerticalAlignment="Center">
+                    </TextBlock>
+                    <TextBlock
+                        Text="Let's configure your setup today."
+                        FontWeight="Light"
+                        FontSize="20"
+                        VerticalAlignment="Center">
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+            <Grid
+                Grid.Row="1"
+                ColumnDefinitions="200, *">
+                <Border
+                    Grid.Column="0"
+                    BorderThickness="0, 0, 1, 0"
+                    BorderBrush="#333333">
+                    <Rectangle
+                        Fill="#222222"
+                        Opacity="0.4"/>
+                </Border>
+                <!-- Tab Bar -->
+                <StackPanel
+                    Grid.Column="0"
+                    Orientation="Vertical"
+                    Margin="10"
+                    HorizontalAlignment="Center"
+                    Spacing="10">
+                    <Svg
+                        Path="/Assets/logo.svg"
+                        Width="150"
+                        Margin="0, 10"/>
+                    <Button
+                        Classes="TabBar"
+                        FontSize="16"
+                        Content="Switch Account"
+                        Command="{Binding SwitchAccountCommand}"/>
+                    <Button
+                        Classes="TabBar"
+                        FontSize="16"
+                        Content="Switch Server"
+                        Command="{Binding SwitchServerCommand}"/>
+                    <Button
+                        Classes="TabBar"
+                        FontSize="16"
+                        Content="Toggle Widgets"/>
+                </StackPanel>
+                <!-- Profiles -->
+                <Border
+                    Grid.Column="0"
+                    BorderThickness="0,1,0,0"
+                    BorderBrush="#333333"
+                    Height="245"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,0,80">
+                    <StackPanel
+                        Margin="10"
+                        Spacing="10">
+                        <TextBox
+                            Text="{Binding ProfileInput}"
+                            BorderBrush="#444444"
+                            Watermark="Profile Name"
+                            MaxHeight="0"
+                            MaxLength="50"/>
+                        <Button
+                            IsEnabled="{Binding !ProfileCreating}"
+                            FontSize="16"
+                            Foreground="LightGreen"
+                            Content="Create Profile"
+                            Classes="TabBar"
+                            Command="{Binding AddProfileCommand}"/>
+                        <Border
+                            CornerRadius="4"
+                            BorderBrush="#444444"
+                            BorderThickness="1"
+                            Background="#333333"
+                            Height="135">
+                            <Grid>
+                                <Image
+                                    IsVisible="{Binding !ProfilesLoaded}"
+                                    Classes="Spinner"
+                                    Height="50"
+                                    Width="50"
+                                    Source="/Assets/spinner.png"/>
+                                <ScrollViewer
+                                    IsVisible="{Binding ProfilesLoaded}">
+                                    <ItemsControl
+                                        Items="{Binding Profiles}"
+                                        Margin="5,2">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <!-- Start Template -->
+                                                <Border
+                                                    Margin="0,3"
+                                                    VerticalAlignment="Top"
+                                                    Background="#444444"
+                                                    Height="30"
+                                                    BorderThickness="1"
+                                                    BorderBrush="#555555"
+                                                    CornerRadius="4">
+                                                    <TextBlock
+                                                        FontSize="14"
+                                                        TextAlignment="Center"
+                                                        HorizontalAlignment="Center"
+                                                        MaxWidth="150"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Name}"
+                                                        ToolTip.Tip="{Binding Name}"/>
+                                                    <Border.ContextFlyout>
+                                                        <Flyout
+                                                            ShowMode="TransientWithDismissOnPointerMoveAway">
+                                                            <StackPanel
+                                                                Spacing="5"
+                                                                HorizontalAlignment="Center">
+                                                                <TextBlock
+                                                                    Margin="0,0,0,3"
+                                                                    TextAlignment="Center"
+                                                                    FontSize="15"
+                                                                    Text="Profile Mode"
+                                                                    ToolTip.Tip="{Binding IdentifierTooltip}"/>
+                                                                <Button
+                                                                    IsEnabled="{Binding ProfileOperation}"
+                                                                    Foreground="LightGreen"
+                                                                    Classes="FlyoutOption"
+                                                                    Content="Apply"
+                                                                    Command="{Binding $parent[ItemsControl].DataContext.ApplyProfileCommand}"
+                                                                    CommandParameter="{Binding .}"/>
+                                                                <Button
+                                                                    IsEnabled="{Binding ProfileOperation}"
+                                                                    Classes="FlyoutOption"
+                                                                    Content="Update"
+                                                                    Command="{Binding $parent[ItemsControl].DataContext.UpdateProfileCommand}"
+                                                                    CommandParameter="{Binding .}"/>
+                                                                <Button
+                                                                    IsEnabled="{Binding ProfileOperation}"
+                                                                    BorderBrush="{StaticResource Brand}"
+                                                                    BorderThickness="1"
+                                                                    Classes="FlyoutOption"
+                                                                    Foreground="{StaticResource Brand}"
+                                                                    Content="Delete"
+                                                                    Command="{Binding $parent[ItemsControl].DataContext.RemoveProfileCommand}"
+                                                                    CommandParameter="{Binding .}"/>
+                                                            </StackPanel>
+                                                        </Flyout>
+                                                    </Border.ContextFlyout>
+                                                </Border>
+                                                <!-- End Template -->
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+                <!-- Server Details -->
+                <Border VerticalAlignment="Bottom"
+                    Grid.Column="0"
+                    BorderThickness="0, 1, 0, 0"
+                    BorderBrush="#333333"
+                    Height="80">
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="7">
+                        <Border
+                            Margin="10,0,0,0"
+                            Height="50"
+                            Width="50"
+                            Background="#333333"
+                            CornerRadius="90"
+                            ClipToBounds="True">
+                            <Image
+                                asyncImageLoader:ImageLoader.Source="{Binding ServerIcon}"
+                                Height="50"
+                                Width="50"/>
+                        </Border>
+                        <StackPanel
+                            Orientation="Vertical"
+                            VerticalAlignment="Center">
+                            <TextBlock
+                                Text="{Binding ServerName}"
+                                TextWrapping="Wrap"
+                                MaxLines="3"
+                                MaxWidth="125"
+                                VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Grid
+                    Grid.Column="1"
+                    RowDefinitions="*, *"
+                    ColumnDefinitions="*, *, *">
+                    <!-- Moderation Widget -->
+                    <Grid
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="10, 10, 5, 5">
+                        <Border
+                            Background="#222222"
+                            CornerRadius="8"
+                            BorderBrush="#333333"
+                            BorderThickness="1">
+                            <Grid>
+                                <StackPanel
+                                    Orientation="Vertical">
+                                    <TextBlock
+                                        Margin="10, 10, 0, 0"
+                                        FontWeight="Black"
+                                        FontSize="30"
+                                        Text="Moderation"
+                                        Foreground="{StaticResource Brand}"/>
+                                    <TextBlock
+                                        Margin="10, 0, 10, 30"
+                                        FontWeight="Light"
+                                        FontSize="18"
+                                        Text="Create Moderations and execute punishments for users."
+                                        TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <Grid
+                                    Margin="20,0,20,20"
+                                    VerticalAlignment="Bottom"
+                                    ColumnDefinitions="*, 100">
+                                    <StackPanel
+                                        Spacing="5"
+                                        Orientation="Vertical">
+                                        <TextBlock
+                                            Height="28"
+                                            Margin="10, 0, 0, 0"
+                                            Text="Enable Widget:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Pin Window:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Lock Position:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                    </StackPanel>
+                                    <StackPanel
+                                        Spacing="5"
+                                        Grid.Column="1"
+                                        Orientation="Vertical">
+                                        <ToggleSwitch
+                                            IsChecked="{Binding ModEnabled}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding ModPinned}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding ModLocked}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <!-- Search Widget -->
+                    <Grid
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="5, 10, 5, 5">
+                        <Border
+                            Background="#222222"
+                            CornerRadius="8"
+                            BorderBrush="#333333"
+                            BorderThickness="1">
+                            <Grid>
+                                <StackPanel
+                                    Orientation="Vertical">
+                                    <TextBlock
+                                        Margin="10, 10, 0, 0"
+                                        FontWeight="Black"
+                                        FontSize="30"
+                                        Text="Search"
+                                        Foreground="{StaticResource Brand}"/>
+                                    <TextBlock
+                                        Margin="10, 0, 10, 30"
+                                        FontWeight="Light"
+                                        FontSize="18"
+                                        Text="Query for past offences of your users and manage them."
+                                        TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <Grid
+                                    Margin="20,0,20,20"
+                                    VerticalAlignment="Bottom"
+                                    ColumnDefinitions="*, 100">
+                                    <StackPanel
+                                        Spacing="5"
+                                        Orientation="Vertical">
+                                        <TextBlock
+                                            Height="28"
+                                            Margin="10, 0, 0, 0"
+                                            Text="Enable Widget:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Pin Window:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Lock Position:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                    </StackPanel>
+                                    <StackPanel
+                                        Spacing="5"
+                                        Grid.Column="1"
+                                        Orientation="Vertical">
+                                        <ToggleSwitch
+                                            IsChecked="{Binding SearchEnabled}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding SearchPinned}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding SearchLocked}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <!-- Shift Widget -->
+                    <Grid
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Margin="5, 10, 10, 5">
+                        <Border
+                            Background="#222222"
+                            CornerRadius="8"
+                            BorderBrush="#333333"
+                            BorderThickness="1">
+                            <Grid>
+                                <StackPanel
+                                    Orientation="Vertical">
+                                    <TextBlock
+                                        Margin="10, 10, 0, 0"
+                                        FontWeight="Black"
+                                        FontSize="30"
+                                        Text="Shift"
+                                        Foreground="{StaticResource Brand}"/>
+                                    <TextBlock
+                                        Margin="10, 0, 10, 30"
+                                        FontWeight="Light"
+                                        FontSize="18"
+                                        Text="Manage your shifts and keep track of your time."
+                                        TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <Grid
+                                    Margin="20,0,20,20"
+                                    VerticalAlignment="Bottom"
+                                    ColumnDefinitions="*, 100">
+                                    <StackPanel
+                                        Spacing="5"
+                                        Orientation="Vertical">
+                                        <TextBlock
+                                            Height="28"
+                                            Margin="10, 0, 0, 0"
+                                            Text="Enable Widget:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Pin Window:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Lock Position:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                    </StackPanel>
+                                    <StackPanel
+                                        Spacing="5"
+                                        Grid.Column="1"
+                                        Orientation="Vertical">
+                                        <ToggleSwitch
+                                            IsChecked="{Binding ShiftEnabled}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding ShiftPinned}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding ShiftLocked}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <!-- Active Staff Widget -->
+                    <Grid
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="10, 5, 5, 10">
+                        <Border
+                            Background="#222222"
+                            CornerRadius="8"
+                            BorderBrush="#333333"
+                            BorderThickness="1">
+                            <Grid>
+                                <StackPanel
+                                    Orientation="Vertical">
+                                    <TextBlock
+                                        Margin="10, 10, 0, 0"
+                                        FontWeight="Black"
+                                        FontSize="30"
+                                        Text="Active Staff"
+                                        Foreground="{StaticResource Brand}"/>
+                                    <TextBlock
+                                        Margin="10, 0, 10, 30"
+                                        FontWeight="Light"
+                                        FontSize="18"
+                                        Text="Keep track of your active staff and manage their shifts."
+                                        TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <Grid
+                                    Margin="20,0,20,20"
+                                    VerticalAlignment="Bottom"
+                                    ColumnDefinitions="*, 100">
+                                    <StackPanel
+                                        Spacing="5"
+                                        Orientation="Vertical">
+                                        <TextBlock
+                                            Height="28"
+                                            Margin="10, 0, 0, 0"
+                                            Text="Enable Widget:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Pin Window:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Lock Position:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                    </StackPanel>
+                                    <StackPanel
+                                        Spacing="5"
+                                        Grid.Column="1"
+                                        Orientation="Vertical">
+                                        <ToggleSwitch
+                                            IsChecked="{Binding ActiveEnabled}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding ActivePinned}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding ActiveLocked}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <!-- Recent Logs Widget -->
+                    <Grid
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="5, 5, 5, 10">
+                        <Border
+                            Background="#222222"
+                            CornerRadius="8"
+                            BorderBrush="#333333"
+                            BorderThickness="1">
+                            <Grid>
+                                <StackPanel
+                                    Orientation="Vertical">
+                                    <TextBlock
+                                        Margin="10, 10, 0, 0"
+                                        FontWeight="Black"
+                                        FontSize="30"
+                                        Text="Recent Logs"
+                                        Foreground="{StaticResource Brand}"/>
+                                    <TextBlock
+                                        Margin="10, 0, 10, 30"
+                                        FontWeight="Light"
+                                        FontSize="18"
+                                        Text="Get a quick overview of the recent logs and manage them."
+                                        TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <Grid
+                                    Margin="20,0,20,20"
+                                    VerticalAlignment="Bottom"
+                                    ColumnDefinitions="*, 100">
+                                    <StackPanel
+                                        Spacing="5"
+                                        Orientation="Vertical">
+                                        <TextBlock
+                                            Height="28"
+                                            Margin="10, 0, 0, 0"
+                                            Text="Enable Widget:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Pin Window:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Lock Position:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                    </StackPanel>
+                                    <StackPanel
+                                        Spacing="5"
+                                        Grid.Column="1"
+                                        Orientation="Vertical">
+                                        <ToggleSwitch
+                                            IsChecked="{Binding RecentEnabled}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding RecentPinned}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding RecentLocked}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <!-- Ban BOLO Widget -->
+                    <Grid
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Margin="5, 5, 10, 10">
+                        <Border
+                            Background="#222222"
+                            CornerRadius="8"
+                            BorderBrush="#333333"
+                            BorderThickness="1">
+                            <Grid>
+                                <StackPanel
+                                    Orientation="Vertical">
+                                    <TextBlock
+                                        Margin="10, 10, 0, 0"
+                                        FontWeight="Black"
+                                        FontSize="30"
+                                        Text="Ban BOLOs"
+                                        Foreground="{StaticResource Brand}"/>
+                                    <TextBlock
+                                        Margin="10, 0, 10, 30"
+                                        FontWeight="Light"
+                                        FontSize="18"
+                                        Text="Create BOLOs and enforce them."
+                                        TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <Grid
+                                    Margin="20,0,20,20"
+                                    VerticalAlignment="Bottom"
+                                    ColumnDefinitions="*, 100">
+                                    <StackPanel
+                                        Spacing="5"
+                                        Orientation="Vertical">
+                                        <TextBlock
+                                            Height="28"
+                                            Margin="10, 0, 0, 0"
+                                            Text="Enable Widget:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Pin Window:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                        <TextBlock
+                                            Margin="10, 0, 0, 0"
+                                            Text="Lock Position:"
+                                            FontWeight="Light"
+                                            FontSize="20"/>
+                                    </StackPanel>
+                                    <StackPanel
+                                        Spacing="5"
+                                        Grid.Column="1"
+                                        Orientation="Vertical">
+                                        <ToggleSwitch
+                                            IsChecked="{Binding BolosEnabled}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding BolosPinned}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                        <ToggleSwitch
+                                            IsChecked="{Binding BolosLocked}"
+                                            Height="28"
+                                            BorderBrush="{StaticResource Brand}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid
+            IsVisible="{Binding !WsConnected}">
+            <Rectangle
+                Fill="{StaticResource Background}"
+                Opacity="0.8"/>
+            <Grid
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <StackPanel
+                    Spacing="10">
+                    <Image
+                        Classes="Spinner"
+                        Height="100"
+                        Width="100"
+                        Source="/Assets/spinner.png"/>
+                    <TextBlock
+                        FontSize="20"
+                        Text="Connecting to SignalR Hub..."/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

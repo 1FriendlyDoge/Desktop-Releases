@@ -1,0 +1,202 @@
+﻿<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+    Width="400" Height="300"
+    x:Class="ERM_Desktop.Views.Widgets.ActiveStaffWidgetView"
+    Title="Active Staff Widget"
+    Icon="/Assets/erm.ico"
+    TransparencyLevelHint="{Binding TransparencyLevel}"
+    Background="{Binding BackgroundBrush}"
+    ExtendClientAreaToDecorationsHint="True"
+    ExtendClientAreaChromeHints="NoChrome"
+    ExtendClientAreaTitleBarHeightHint="0"
+    CanResize="False"
+    xmlns:vm="using:ERM_Desktop.ViewModels.Widgets"
+    PointerPressed="InputElement_OnPointerPressed"
+    x:DataType="vm:ActiveStaffViewModel">
+    <Grid>
+        <Rectangle
+            Fill="#111111"
+            Opacity="0.5"/>
+        <Grid
+            RowDefinitions="Auto, *">
+            <TextBlock
+                Grid.Row="0"
+                Margin="10,10,0,5"
+                Text="Active Staff"
+                FontSize="24"
+                FontWeight="Black"
+                Foreground="{StaticResource Brand}"/>
+            <ScrollViewer
+                Padding="10,0"
+                Grid.Row="1"
+                Background="Transparent">
+                <ScrollViewer.IsVisible>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding Path="Loaded"/>
+                        <Binding Path="!Inactive"/>
+                    </MultiBinding>
+                </ScrollViewer.IsVisible>
+                <ItemsControl
+                    Items="{Binding Shifts}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0,3"
+                                Width="380"
+                                Height="50"
+                                Background="#222222"
+                                BorderBrush="#333333"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                <Border.ContextFlyout>
+                                    <Flyout
+                                        ShowMode="TransientWithDismissOnPointerMoveAway">
+                                        <StackPanel>
+                                            <TextBlock
+                                                Margin="0,0,0,3"
+                                                FontSize="16"
+                                                TextAlignment="Center"
+                                                Foreground="{StaticResource Brand}"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding Shift.Username}"/>
+                                            <TextBlock
+                                                FontSize="14"
+                                                TextAlignment="Center"
+                                                Foreground="#888888"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding FormattedTotalTime}"/>
+                                            <TextBlock
+                                                Margin="0,0,0,5"
+                                                FontSize="14"
+                                                TextAlignment="Center"
+                                                Foreground="#888888"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding FormattedBreakTime}"/>
+                                            <Button
+                                                Width="135"
+                                                FontWeight="Regular"
+                                                BorderThickness="1"
+                                                HorizontalAlignment="Center"
+                                                Content="End Shift"
+                                                Command="{Binding $parent[ItemsControl].DataContext.ForceEndShiftCommand}"
+                                                CommandParameter="{Binding}"
+                                                Classes="FlyoutOption">
+                                                <Button.IsEnabled>
+                                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                        <MultiBinding Converter="{x:Static BoolConverters.Or}">
+                                                            <Binding Path="OwnedShift"/>
+                                                            <Binding Path="$parent[ItemsControl].DataContext.ManagementPermissions"/>
+                                                        </MultiBinding>
+                                                        <Binding Path="!Executing"/> 
+                                                    </MultiBinding>
+                                                </Button.IsEnabled>
+                                            </Button>
+                                            <Button
+                                                Margin="0,3,0,0"
+                                                Width="135"
+                                                FontWeight="Regular"
+                                                BorderThickness="1"
+                                                HorizontalAlignment="Center"
+                                                BorderBrush="#ff8c00"
+                                                Foreground="#ff8c00"
+                                                Content="{Binding BreakText}"
+                                                Command="{Binding $parent[ItemsControl].DataContext.ForceModifyBreakCommand}"
+                                                CommandParameter="{Binding}"
+                                                Classes="FlyoutOption">
+                                                <Button.IsEnabled>
+                                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                        <MultiBinding Converter="{x:Static BoolConverters.Or}">
+                                                            <Binding Path="OwnedShift"/>
+                                                            <Binding Path="$parent[ItemsControl].DataContext.ManagementPermissions"/>
+                                                        </MultiBinding>
+                                                        <Binding Path="!Executing"/> 
+                                                    </MultiBinding>
+                                                </Button.IsEnabled>
+                                            </Button>
+                                            <Button
+                                                Margin="0,3,0,0"
+                                                Width="135"
+                                                FontWeight="Regular"
+                                                BorderThickness="1"
+                                                HorizontalAlignment="Center"
+                                                BorderBrush="{StaticResource Brand}"
+                                                Foreground="{StaticResource Brand}"
+                                                Content="Void Shift"
+                                                Command="{Binding $parent[ItemsControl].DataContext.ForceVoidShiftCommand}"
+                                                CommandParameter="{Binding}"
+                                                Classes="FlyoutOption">
+                                                <Button.IsEnabled>
+                                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                        <MultiBinding Converter="{x:Static BoolConverters.Or}">
+                                                            <Binding Path="OwnedShift"/>
+                                                            <Binding Path="$parent[ItemsControl].DataContext.ManagementPermissions"/>
+                                                        </MultiBinding>
+                                                        <Binding Path="!Executing"/> 
+                                                    </MultiBinding>
+                                                </Button.IsEnabled>
+                                            </Button>
+                                        </StackPanel>
+                                    </Flyout>
+                                </Border.ContextFlyout>
+                                <Grid
+                                    Margin="5"
+                                    VerticalAlignment="Center"
+                                    ColumnDefinitions="Auto, Auto, *, Auto">
+                                    <Border
+                                        Background="{Binding IndicatorColor}"
+                                        Height="40"
+                                        Width="40"
+                                        Margin="0,0,10,0"
+                                        CornerRadius="8"/>
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Width="210"
+                                        Text="{Binding Shift.Username}"
+                                        FontSize="16"/>
+                                    <TextBlock
+                                        TextAlignment="Right"
+                                        Margin="0,0,5,0"
+                                        FontSize="16"
+                                        VerticalAlignment="Center"
+                                        Grid.Column="3"
+                                        Text="{Binding FormattedTime}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <Grid
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                IsVisible="{Binding !Loaded}">
+                <Image
+                    Classes="Spinner"
+                    Height="100"
+                    Width="100"
+                    Source="/Assets/spinner.png"/>
+            </Grid>
+            <Grid
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <Grid.IsVisible>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding Path="Loaded"/>
+                        <Binding Path="Inactive"/>
+                    </MultiBinding>
+                </Grid.IsVisible>
+                <TextBlock
+                    Text="No Active Shifts"
+                    FontWeight="SemiBold"
+                    FontSize="24"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

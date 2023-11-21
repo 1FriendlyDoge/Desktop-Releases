@@ -1,0 +1,202 @@
+﻿<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
+    Width="400" Height="500"
+    x:Class="ERM_Desktop.Views.Widgets.RecentLogsWidgetView"
+    Title="Recent Logs Widget"
+    Icon="/Assets/erm.ico"
+    TransparencyLevelHint="{Binding TransparencyLevel}"
+    Background="{Binding BackgroundBrush}"
+    ExtendClientAreaToDecorationsHint="True"
+    ExtendClientAreaChromeHints="NoChrome"
+    ExtendClientAreaTitleBarHeightHint="0"
+    CanResize="False"
+    xmlns:vm="using:ERM_Desktop.ViewModels.Widgets"
+    PointerPressed="InputElement_OnPointerPressed"
+    x:DataType="vm:RecentLogsViewModel"
+    x:CompileBindings="False">
+    <Grid>
+        <Rectangle
+            Fill="#111111"
+            Opacity="0.5"/>
+        <Grid
+            RowDefinitions="Auto, *">
+            <TextBlock
+                Text="Recent Logs"
+                FontSize="24"
+                FontWeight="Black"
+                Foreground="{StaticResource Brand}"
+                Margin="10,10,10,5"/>
+            <ScrollViewer
+                IsVisible="{Binding !Loading}"
+                Padding="10,0"
+                VerticalAlignment="Top"
+                Grid.Row="1"
+                Background="Transparent">
+                <!-- Component -->
+                <ItemsControl
+                    Items="{Binding PunishmentsList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Padding="5"
+                                Margin="0,5"
+                                Height="130"
+                                BorderBrush="#333333"
+                                CornerRadius="8"
+                                Background="#222222"
+                                BorderThickness="1">
+                                <Border.ContextFlyout>
+                                    <Flyout
+                                        ShowMode="TransientWithDismissOnPointerMoveAway">
+                                        <StackPanel
+                                            HorizontalAlignment="Center">
+                                            <TextBlock
+                                                Foreground="{StaticResource Brand}"
+                                                FontWeight="SemiBold"
+                                                FontSize="14"
+                                                TextAlignment="Center"
+                                                Text="{Binding Punishment.Username}"/>
+                                            <TextBlock
+                                                TextAlignment="Center"
+                                                Foreground="#888888"
+                                                Text="{Binding Punishment.Id}"
+                                                Margin="0,0,0,10"/>
+                                            <Button
+                                                HorizontalAlignment="Center"
+                                                BorderBrush="{StaticResource Brand}"
+                                                BorderThickness="1"
+                                                Classes="FlyoutOption"
+                                                Foreground="{StaticResource Brand}"
+                                                Content="Delete"
+                                                Width="150"
+                                                Command="{Binding $parent[ItemsControl].DataContext.DeletePunishmentCommand}"
+                                                CommandParameter="{Binding}">
+                                                <Button.IsEnabled>
+                                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                        <Binding Path="!Deletion"/>
+                                                        <Binding Path="$parent[ItemsControl].DataContext.ManagementPermissions"/>
+                                                    </MultiBinding>
+                                                </Button.IsEnabled>
+                                            </Button>
+                                        </StackPanel>
+                                    </Flyout>
+                                </Border.ContextFlyout>
+                                <StackPanel
+                                    Orientation="Vertical">
+                                    <Grid
+                                        ColumnDefinitions="Auto, Auto, *, Auto"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top">
+                                        <Panel
+                                            ZIndex="1"
+                                            Margin="0, 0, 5, 0"
+                                            Grid.Column="0">
+                                            <Ellipse
+                                                Width="50" Height="50"
+                                                Fill="#222222"
+                                                Opacity="0.4"/>
+                                            <Border
+                                                ClipToBounds="True"
+                                                Width="50"
+                                                Height="50"
+                                                Background="Transparent"
+                                                CornerRadius="90">
+                                                <Image
+                                                    asyncImageLoader:ImageLoader.Source="{Binding AvatarUrl}"/>
+                                            </Border>
+                                        </Panel>
+                                        <StackPanel
+                                            ZIndex="2"
+                                            Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            Orientation="Vertical">
+                                            <TextBlock
+                                                HorizontalAlignment="Left"
+                                                FontSize="16"
+                                                Text="{Binding Punishment.Username}"
+                                                MaxWidth="180"
+                                                ToolTip.Tip="{Binding Punishment.Username}"/>
+                                            <TextBlock
+                                                HorizontalAlignment="Left"
+                                                Width="100"
+                                                Foreground="#888888"
+                                                FontSize="12"
+                                                Text="{Binding Punishment.UserID}"/>
+                                        </StackPanel>
+                                        <Grid Grid.Column="2"
+                                              ZIndex="0"
+                                              IsHitTestVisible="False"
+                                              Width="500"/>
+                                        <StackPanel
+                                            ZIndex="3"
+                                            Grid.Column="3"
+                                            Orientation="Vertical"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Right">
+                                            <TextBlock
+                                                HorizontalAlignment="Right"
+                                                Foreground="{StaticResource Brand}"
+                                                FontSize="16"
+                                                FontWeight="Black"
+                                                Text="{Binding Punishment.Type}"/>
+                                            <TextBlock
+                                                HorizontalAlignment="Right"
+                                                FontSize="14"
+                                                Foreground="#888888"
+                                                MaxWidth="130"
+                                                Text="{Binding ModeratorDiscord}"
+                                                ToolTip.Tip="{Binding ModeratorTooltip}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <TextBlock
+                                        Margin="5,0,0,0"
+                                        Text="{Binding DateFormatted}"
+                                        Foreground="#888888"/>
+                                    <ScrollViewer
+                                        Padding="5"
+                                        Height="50">
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Punishment.Reason}"
+                                            TextWrapping="Wrap"/>
+                                    </ScrollViewer>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <Grid
+                IsVisible="{Binding Loading}"
+                Grid.Row="1"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+                <Image
+                    Classes="Spinner"
+                    Height="100"
+                    Width="100"
+                    Source="/Assets/spinner.png"/>
+            </Grid>
+            <Grid
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <Grid.IsVisible>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding Path="!Loading"/>
+                        <Binding Path="NoItems"/>
+                    </MultiBinding>
+                </Grid.IsVisible>
+                <TextBlock
+                    Text="No Entries"
+                    FontWeight="SemiBold"
+                    FontSize="24"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

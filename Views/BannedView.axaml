@@ -1,0 +1,47 @@
+﻿<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="690"
+    x:Class="ERM_Desktop.Views.BannedView">
+    <Grid>
+        <Rectangle
+            Fill="{StaticResource Background}"
+            Opacity="0.8"/>
+        <StackPanel
+            Orientation="Vertical"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <TextBlock
+                TextAlignment="Center"
+                Text="System Ban"
+                Foreground="{StaticResource Brand}"
+                FontWeight="Black"
+                FontSize="72"/>
+            <TextBlock
+                TextAlignment="Center"
+                Width="800"
+                FontWeight="Light"
+                Text="Your account is suspended from using ERM Desktop."
+                TextWrapping="Wrap"
+                FontSize="24"
+                Margin="0,0,0,30"/>
+            <TextBlock
+                Foreground="Gray"
+                TextAlignment="Center"
+                Width="800"
+                Text="Reason"
+                FontWeight="Light"
+                TextWrapping="Wrap"
+                FontSize="20"/>
+            <TextBlock
+                Foreground="{StaticResource Brand}"
+                TextAlignment="Center"
+                Width="800"
+                Text=""
+                TextWrapping="Wrap"
+                FontSize="24"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
