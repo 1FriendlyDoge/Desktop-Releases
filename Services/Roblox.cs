@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -158,10 +158,12 @@ public class Roblox
     
     public static async Task<string> PredictPunishment(string reason)
     {
-        string reasonEscaped = reason.Replace("\"", "\\\"").Replace("\'", "\\\'");
-        reasonEscaped = "\"" + reasonEscaped + "\"";
+        List<string> reasons = new List<string>()
+        {
+            reason
+        };
         
-        StringContent content = new StringContent(reasonEscaped, Encoding.UTF8, "application/json");
+        StringContent content = new StringContent(JsonConvert.SerializeObject(reasons), Encoding.UTF8, "application/json");
         HttpResponseMessage resp = await Storage.HttpClient.PostAsync("api/Moderation/PredictPunishment", content);
 
         return resp.Content.ReadAsStringAsync().Result;
