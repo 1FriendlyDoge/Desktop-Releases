@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -78,6 +78,7 @@ public partial class ModerationViewModel : WidgetViewModel
         
         usernameTimer.Start();
         aiTimer.Start();
+        idleTimer.Start();
         
         usernameTimer.Elapsed += async (_, _) =>
         {
@@ -88,12 +89,18 @@ public partial class ModerationViewModel : WidgetViewModel
         {
             await AiTimerElapsed();
         };
+        
+        idleTimer.Elapsed += async (_, _) =>
+        {
+            await IdleTimerElapsed();
+        };
 
         return Task.CompletedTask;
     }
     
     private readonly Timer usernameTimer = new Timer(100);
     private readonly Timer aiTimer = new Timer(100);
+    private readonly Timer idleTimer = new Timer(500);
     private string usernameCheckpoint = String.Empty;
     private string aiCheckpoint = String.Empty;
     private long completionCheckpoint;
@@ -125,6 +132,9 @@ public partial class ModerationViewModel : WidgetViewModel
             usernameTimer.Stop();
             usernameTimer.Start();
         }
+        
+        idleTimer.Stop();
+        idleTimer.Start();
     }
     
     public async Task ForceUserlookup()
@@ -223,6 +233,11 @@ public partial class ModerationViewModel : WidgetViewModel
         {
             AiPrediction = "Error";
         }
+    }
+    
+    private async Task IdleTimerElapsed()
+    {
+        await ForceUserlookup();
     }
     
     [RelayCommand]
