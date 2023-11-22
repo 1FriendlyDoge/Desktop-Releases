@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 
 namespace ERM_Desktop.Models;
 
@@ -27,13 +27,30 @@ public class Profile
 
     public struct WidgetState
     {
-        public bool Enabled { get; set; }
-        public bool Pinned { get; set; }
-        public bool Locked { get; set; }
+        public bool Enabled { get; init; }
+        public bool Pinned { get; init; }
+        public bool Locked { get; init; }
     }
     
     public Profile(string name = "Default")
     {
         Name = name;
+    }
+    
+    public void OverwriteSettings(Profile ov)
+    {
+        ModerationPosition = ov.ModerationPosition;
+        RecentLogsPosition = ov.RecentLogsPosition;
+        ShiftPosition = ov.ShiftPosition;
+        ActiveStaffPosition = ov.ActiveStaffPosition;
+        BolosPosition = ov.BolosPosition;
+        SearchPosition = ov.SearchPosition;
+        
+        ModerationState = ov.ModerationState;
+        RecentLogsState = ov.RecentLogsState;
+        ShiftState = ov.ShiftState;
+        ActiveStaffState = ov.ActiveStaffState;
+        BolosState = ov.BolosState;
+        SearchState = ov.SearchState;
     }
 }
