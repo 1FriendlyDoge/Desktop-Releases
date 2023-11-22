@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
@@ -299,6 +299,30 @@ public partial class HomeViewModel : PageViewModel
     [ObservableProperty]
     private bool _wsConnected;
     
+    
+    [RelayCommand]
+    public void ToggleWidgets()
+    {
+        if(ModEnabled || RecentEnabled || ShiftEnabled || ActiveEnabled || BolosEnabled || SearchEnabled)
+        {
+            ModEnabled = false;
+            RecentEnabled = false;
+            ShiftEnabled = false;
+            ActiveEnabled = false;
+            BolosEnabled = false;
+            SearchEnabled = false;
+        }
+        else
+        {
+            ModEnabled = true;
+            RecentEnabled = true;
+            ShiftEnabled = true;
+            ActiveEnabled = true;
+            BolosEnabled = true;
+            SearchEnabled = true;
+        }
+    }
+    
     public Profile ExportProfile()
     {
         Profile p = new Profile
@@ -485,8 +509,10 @@ public partial class HomeViewModel : PageViewModel
         }
         
         int index = Profiles.IndexOf(profile);
-        Profiles.Remove(profile);
-        Profiles.Insert(index, p);
+        if(index != -1)
+        {
+            Profiles[index].OverwriteSettings(p);
+        }
         
         ProfileOperation = false;
     }
