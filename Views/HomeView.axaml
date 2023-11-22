@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -89,7 +89,8 @@
                     <Button
                         Classes="TabBar"
                         FontSize="16"
-                        Content="Toggle Widgets"/>
+                        Content="Toggle Widgets"
+                        Command="{Binding ToggleWidgetsCommand}"/>
                 </StackPanel>
                 <!-- Profiles -->
                 <Border
@@ -165,20 +166,20 @@
                                                                     Text="Profile Mode"
                                                                     ToolTip.Tip="{Binding IdentifierTooltip}"/>
                                                                 <Button
-                                                                    IsEnabled="{Binding ProfileOperation}"
+                                                                    IsEnabled="{Binding !$parent[ItemsControl].DataContext.ProfileOperation}"
                                                                     Foreground="LightGreen"
                                                                     Classes="FlyoutOption"
                                                                     Content="Apply"
                                                                     Command="{Binding $parent[ItemsControl].DataContext.ApplyProfileCommand}"
                                                                     CommandParameter="{Binding .}"/>
                                                                 <Button
-                                                                    IsEnabled="{Binding ProfileOperation}"
+                                                                    IsEnabled="{Binding !$parent[ItemsControl].DataContext.ProfileOperation}"
                                                                     Classes="FlyoutOption"
                                                                     Content="Update"
                                                                     Command="{Binding $parent[ItemsControl].DataContext.UpdateProfileCommand}"
                                                                     CommandParameter="{Binding .}"/>
                                                                 <Button
-                                                                    IsEnabled="{Binding ProfileOperation}"
+                                                                    IsEnabled="{Binding !$parent[ItemsControl].DataContext.ProfileOperation}"
                                                                     BorderBrush="{StaticResource Brand}"
                                                                     BorderThickness="1"
                                                                     Classes="FlyoutOption"
