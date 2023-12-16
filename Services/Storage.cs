@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using DiscordRPC;
 using ERM_Desktop.Models;
@@ -10,6 +11,7 @@ namespace ERM_Desktop.Services;
 public static class Storage
 {
     public static readonly string BaseUrl = "https://api.ermbot.xyz/";
+    public static string OAuth2URL = String.Empty;
 
     public static bool OAuth2Loaded = false;
     public static string Identifier = String.Empty;
@@ -32,9 +34,20 @@ public static class Storage
     
     public static readonly HubConnection HubConnection = new HubConnectionBuilder()
         .WithUrl(Storage.BaseUrl + "socket")
-        .WithAutomaticReconnect(new[] { TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100),TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(300), TimeSpan.FromMilliseconds(400), TimeSpan.FromMilliseconds(500)})
+        .WithAutomaticReconnect(new[] { TimeSpan.FromMilliseconds(0),
+            TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(500)})
         .Build();
     
     public static readonly DiscordRpcClient DiscordRpcClient = new DiscordRpcClient("1090291300881932378");
     public static DateTime InitialLoadTime = DateTime.UtcNow;
+    
+    public static string FolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ERM");
 }

@@ -13,6 +13,7 @@
         <NeutralLanguage>en</NeutralLanguage>
         <PublicSign>false</PublicSign>
         <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>

@@ -9,25 +9,23 @@ using Newtonsoft.Json;
 
 namespace ERM_Desktop.Services;
 
-public class Auth
+public static class Auth
 {
-    public string OAuth2URL = string.Empty;
-    
-    public async Task<string> GetIdentifier()
+    public static async Task GetIdentifier()
     {
         HttpResponseMessage resp = await Storage.HttpClient.GetAsync("api/Auth/GetIdentifier");
         if(resp.IsSuccessStatusCode)
         {
             Storage.Identifier = await resp.Content.ReadAsStringAsync();
             Storage.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Storage.Identifier);
-            return Storage.Identifier;
+            return;
         }
 
-        throw new HttpRequestException("Failed to get identifier.");
+        throw new HttpRequestException($"Failed to get identifier. {resp.RequestMessage?.RequestUri} - {resp.StatusCode} - {resp.ReasonPhrase}");
     }
     
 
-    public async Task<string> GetOAuth2URL()
+    public static async Task GetOAuth2URL()
     {
         if(String.IsNullOrEmpty(Storage.Identifier))
         {
@@ -37,21 +35,22 @@ public class Auth
         HttpResponseMessage resp = await Storage.HttpClient.GetAsync("api/Auth/GetOAuth2URL");
         if(resp.IsSuccessStatusCode)
         {
-            OAuth2URL = await resp.Content.ReadAsStringAsync();
-            return OAuth2URL;
+            Storage.OAuth2URL = await resp.Content.ReadAsStringAsync();
+            return;
         }
 
-        throw new HttpRequestException("Failed to get OAuth2 URL.");
+        throw new HttpRequestException($"Failed to get OAuth2 URL.");
     }
     
     
-    public async Task<bool> ResolveIdentifier()
+    public static async Task<bool> ResolveIdentifier()
     {
         if(string.IsNullOrEmpty(Storage.Identifier))
         {
             throw new NullReferenceException("Identifier is null.");
         }
         
+        Storage.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Storage.Identifier);
         HttpResponseMessage resp = await Storage.HttpClient.GetAsync($"api/Auth/ResolveIdentifier");
         if(resp.IsSuccessStatusCode)
         {
@@ -64,7 +63,7 @@ public class Auth
     }
 
 
-    public async Task<List<GuildsPermissions>> GetServers()
+    public static async Task GetServers()
     {
         if(string.IsNullOrEmpty(Storage.Identifier))
         {
@@ -101,7 +100,7 @@ public class Auth
                 Storage.UserInstance.DiscordServers = updatedDiscordServers;
             }
 
-            return guildsPermissions;
+            return;
         }
         
         throw new HttpRequestException("Failed to load servers.");

@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.ReactiveUI;
@@ -24,6 +25,28 @@ public static class Program
             {
                 Environment.Exit(1);
                 return;
+            }
+
+            try
+            {
+                if(!Directory.Exists(Storage.FolderPath))
+                {
+                    Directory.CreateDirectory(Storage.FolderPath);
+                }
+                
+                if(File.Exists(Path.Combine(Storage.FolderPath, "erm.auth")))
+                {
+                    string key = File.ReadAllText(Path.Combine(Storage.FolderPath, "erm.auth"));
+                    
+                    if(!string.IsNullOrWhiteSpace(key))
+                    {
+                        Storage.Identifier = key;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
             
             SentrySdk.Init(o =>

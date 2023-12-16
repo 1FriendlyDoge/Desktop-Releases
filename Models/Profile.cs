@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 
 namespace ERM_Desktop.Models;
 

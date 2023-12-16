@@ -55,8 +55,7 @@ public partial class ServerSelectionViewModel : PageViewModel
             }
         }).ConfigureAwait(false);
         
-        Auth auth = new Auth();
-        await auth.GetServers();
+        await Auth.GetServers();
         Servers = new ObservableCollection<DiscordServer>(Storage.UserInstance?.DiscordServers ?? new List<DiscordServer>());
         Loaded = true;
     }
